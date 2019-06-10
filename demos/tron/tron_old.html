@@ -1,0 +1,53 @@
+<html>
+<head>
+	<title>Tron</title>
+	<style type="text/css">
+		#canvas {
+			border:1px solid black;
+			outline:1px solid black;
+		}
+	</style>
+</head>
+<body>
+<canvas id="canvas" width="600" height="600">
+</canvas>
+
+<script type="text/javascript">
+var canvas = document.getElementById("canvas");
+var context = canvas.getContext("2d");
+
+var currentx = 0;
+var currenty = 0;
+
+function init() {
+	window.requestAnimationFrame(draw);
+}
+
+function draw() {
+	update(); //update what's on screen
+	window.setTimeout(window.requestAnimationFrame(draw), 1000 / 60);
+}
+
+//all of the game stuff happens here
+function update() { 
+	//clear the last cycle
+	context.clearRect(0,0,canvas.width, canvas.height);
+
+	//update the game state
+	currentx++;
+	currenty++;
+
+	//draw the game state
+	context.beginPath(); //make sure you close your last path!
+	context.rect(currentx,currenty,50,50);
+	context.fill();
+	context.closePath();
+}
+
+init();
+
+
+</script>
+
+</body>
+</html>

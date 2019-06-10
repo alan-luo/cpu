@@ -1,0 +1,152 @@
+<html>
+<head>
+	<title>Tron</title>
+	<style type="text/css">
+		#canvas {
+			border:1px solid black;
+			outline:1px solid black;
+		}
+	</style>
+</head>
+<body>
+<canvas id="canvas" width="600" height="600">
+</canvas>
+
+<script type="text/javascript">
+var canvas = document.getElementById("canvas");
+var context = canvas.getContext("2d");
+
+function init() {
+	window.requestAnimationFrame(draw);
+}
+
+function draw() {
+	update(); //update what's on screen
+	window.setTimeout(window.requestAnimationFrame(draw), 1000 / 60);
+}
+
+//create two 60 x 60 game state arrays for player1 and player2
+//a 1 in the p1 array represents player 1 occupying that space, same for p2
+//rows first then columns
+var player1 = [];
+var player2 = [];
+for(var i=0; i<60; i++) {
+	var array1 = [];
+	var array2 = [];
+	for(var j=0; j<60; j++) {
+		array1.push(0); array2.push(0);
+	}
+	player1.push(array1); player2.push(array2);
+}
+
+//set starting locations
+player1[5][5]=1;
+player2[10][10]=1;
+var p1location = [5,5];
+var p2location = [10,10];
+
+//set starting direction
+var p1direction = [1, 0];
+var p2direction = [1, 0];
+
+//all of the game stuff happens here
+var framecount=0;
+function update() { 
+	framecount++;
+	//cause the animation to only run every 10/60 = 1/6 of a second
+	if(framecount == 10) {
+		framecount=0;
+
+		//clear the last cycle
+		context.clearRect(0,0,canvas.width, canvas.height);
+
+		//update the game state
+		//find the new location
+		p1new = [p1location[0] + p1direction[0],p1location[1] + p1direction[1]];
+		p2new = [p2location[0] + p2direction[0],p2location[1] + p2direction[1]];
+
+		//update the position matrix (the snake trace)
+		//check to see if the game is over
+		//if the value at the new location is 1, i.e. it's already occupied
+		if(player1[p1new[0]][p1new[1]] || 
+		   player2[p1new[0]][p1new[1]]) {  //check for both p1 and p2
+			alert("player 1 lost");
+		}
+		if(player1[p2new[0]][p2new[1]] || 
+		   player2[p2new[0]][p2new[1]]) {
+			alert("player 2 lost");
+		}
+
+
+		//set the next location to 1, i.e. add the next location onto the path
+		player1[p1new[0]][p1new[1]]=1;
+		player2[p2new[0]][p2new[1]]=1;
+
+
+		//set the current location to the next location
+		p1location=p1new;
+		p2location=p2new;
+
+
+
+		//draw the game state
+		for(var i=0; i<60; i++) { //iterate through rows
+			for(var j=0; j<60; j++) { //iterate through columns
+				if(player1[i][j]==1) {
+					context.beginPath();
+					context.rect(j*10,i*10,10,10);
+					context.fillStyle="#FF0000";
+					context.lineWidth=3;
+					context.stroke();
+					context.fill();
+				}
+				if(player2[i][j]==1) {
+					context.beginPath();
+					context.rect(j*10,i*10,10,10);
+					context.fillStyle="#0000FF";
+					context.lineWidth=3;
+					context.stroke();
+					context.fill();
+				}
+			}
+		}
+
+	}
+}
+
+//set up an event listener
+window.addEventListener( "keydown", doKeyDown, true);
+function doKeyDown(e) {
+	if(e.keyCode == 87) { //key pressed is W
+		p1direction = [-1,0]; //go up 1 row
+	}
+	if(e.keyCode == 83) { //key pressed is S
+		p1direction = [1,0]; //go down 1 row
+	}
+	if(e.keyCode == 65) { //key pressed is A
+		p1direction = [0,-1]; //go back 1 col
+	}
+	if(e.keyCode == 68) { //key pressed is D
+		p1direction = [0,1]; //go forward 1 col
+	}
+	if(e.keyCode == 38) { //key pressed is UP
+		p2direction = [-1,0];
+	}
+	if(e.keyCode == 40) { //key pressed is DOWN
+		p2direction = [1,0];
+	}
+	if(e.keyCode == 37) { //key pressed is LEFT
+		p2direction = [0,-1];
+	}
+	if(e.keyCode == 39) { //key pressed is RIGHT
+		p2direction = [0,1];
+	}
+}
+
+init();
+
+
+</script>
+
+</body>
+</html>

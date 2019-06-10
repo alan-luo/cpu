@@ -1,0 +1,86 @@
+<html>
+<head>
+	<title>Hello</title>
+	<style type="text/css">
+	canvas {
+		border:1px solid black;
+	}
+
+	</style>
+</head>
+<body>
+	<canvas width="800" height="600" id="canvas"></canvas>
+
+
+	<script type="text/javascript">
+	var canvas = document.getElementById("canvas");
+	var ctx = canvas.getContext('2d');
+
+	ctx.translate(canvas.width/2, canvas.height/2); //center the canvas
+	ctx.scale(1, -1);
+
+
+
+
+	function init() {
+		window.requestAnimationFrame(draw);
+	}
+
+	function hello() {
+		console.log("hi!");
+	}
+
+	var x = 0;
+	var y = 300;
+
+	var vx = 0;
+	var vy = 0;
+
+	var ax = 0;
+	var ay = -0.1; //this is gravity
+
+
+	function draw() {
+		//clear all the drawings
+		ctx.clearRect(-canvas.width/2, -canvas.height/2, canvas.width, canvas.height);
+
+		//draw water
+		ctx.fillStyle="blue";
+		ctx.fillRect(-canvas.width/2, -canvas.height/2, canvas.width, canvas.height/2);
+
+		ctx.fillStyle="green";
+		ctx.fillRect(-canvas.width/2, -canvas.height/2, canvas.width, canvas.height/4);
+
+		//calculate new positions
+		x = x + vx; //change position by velocity
+		y = y + vy;
+
+		var resistance = 0; //by default, there is no resistance
+		if(y < -canvas.height/4) {
+			resistance = 0.04*vy*vy;
+		} else if(y<0) { //if we are in the water
+			resistance = 0.02*vy*vy;	//then calculate resistance
+			//resistance is proportional to the square of the velocity
+		}
+		
+		
+
+		vx = vx + ax; //change velocity by acceleration
+		vy = vy + ay + resistance;
+
+
+
+
+		//redraw them in the right place
+		ctx.fillStyle="black";
+		ctx.fillRect(x, y, 30, 30);
+		
+		window.requestAnimationFrame(draw);
+	}
+
+
+	init();
+
+	</script>
+</body>
+</html>
